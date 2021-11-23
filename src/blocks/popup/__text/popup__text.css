@@ -1,11 +1,4 @@
-.image {
-  width: 200px;
-  height: 200px;
-  margin: 60px 0px 32px;
-  align-self: center;
-}
-
-.text {
+.popup__text {
   width: 358px;
   color: black;
   font-weight: 900;
@@ -17,13 +10,7 @@
 }
 
 @media screen and (max-width: 550px) {
-  .image {
-    width: 120px;
-    height: 120px;
-    margin: 50px 0px 40px;
-  }
-
-  .text {
+  .popup__text {
     width: 244px;
     font-size: 20px;
     line-height: 24px;

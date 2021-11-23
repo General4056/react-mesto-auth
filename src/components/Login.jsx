@@ -1,14 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
 import Header from './Header';
-import './Login.css';
-import * as auth from '../auth.js';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Login({ handleLogin }) {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
-
-  let navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -16,20 +12,9 @@ export default function Login({ handleLogin }) {
   }
 
   function handleSubmit(e) {
-    console.log(loginData);
     e.preventDefault();
-    if (!loginData.email || !loginData.password) {
-      return;
-    }
-    auth
-      .authorize(loginData.password, loginData.email)
-      .then((data) => {
-        if (data.token) {
-          handleLogin(data.email);
-          navigate('/');
-        }
-      })
-      .catch((err) => console.log(err));
+
+    handleLogin(loginData);
   }
 
   return (

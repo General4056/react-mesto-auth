@@ -60,10 +60,17 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  function handleLogin(email) {
-    setLoggedIn(true);
-    setUserEmail(email);
-  }
+  useEffect(() => {
+    const closeByEscape = (event) => {
+      if (event.key === 'Escape') {
+        closeAllPopups();
+      }
+    };
+
+    document.addEventListener('keydown', closeByEscape);
+
+    return () => document.removeEventListener('keydown', closeByEscape);
+  }, []);
 
   function handleRegistrationSuccess(isSuccess) {
     setIsRegistrationSuccess(isSuccess);
@@ -152,6 +159,7 @@ function App() {
         .checkToken(token)
         .then((res) => {
           if (res) {
+            console.log(res.data.email);
             handleLogin(res.data.email);
             navigate('/');
           }
@@ -160,9 +168,42 @@ function App() {
     }
   }
 
+  function handleLogin(email) {
+    setLoggedIn(true);
+    setUserEmail(email);
+  }
+
   function handleExit() {
     setLoggedIn(false);
     localStorage.removeItem('token');
+  }
+
+  function handleLoginSubmit(loginData) {
+    if (!loginData.email || !loginData.password) {
+      return;
+    }
+    auth
+      .authorize(loginData.password, loginData.email)
+      .then((data) => {
+        if (data.token) {
+          handleLogin(loginData.email);
+          navigate('/');
+        }
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function handleRegistrationSubmit(registrData) {
+    if (!registrData.email || !registrData.password) {
+      return;
+    }
+    auth
+      .register(registrData.password, registrData.email)
+      .then(() => {
+        navigate('/sign-in');
+        handleRegistrationSuccess(true);
+      })
+      .catch(() => handleRegistrationSuccess(false));
   }
 
   return (
@@ -222,8 +263,8 @@ function App() {
                 />
               }
             />
-            <Route path="/sign-up" element={<Register handleRegistrationSuccess={handleRegistrationSuccess} />} />
-            <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
+            <Route path="/sign-up" element={<Register handleRegistration={handleRegistrationSubmit} />} />
+            <Route path="/sign-in" element={<Login handleLogin={handleLoginSubmit} />} />
           </Routes>
           <InfoTooltip
             isOpen={isInfoPopupOpen}

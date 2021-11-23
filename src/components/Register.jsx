@@ -1,14 +1,10 @@
 import React from 'react';
 import { useState } from 'react';
 import Header from './Header';
-import './Login.css';
-import * as auth from '../auth.js';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function Register({ handleRegistrationSuccess }) {
+export default function Register({ handleRegistration }) {
   const [registrData, setRegistrData] = useState({ email: '', password: '' });
-
-  let navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -17,14 +13,7 @@ export default function Register({ handleRegistrationSuccess }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(registrData.password, registrData.email);
-    auth
-      .register(registrData.password, registrData.email)
-      .then(() => {
-        navigate('/sign-in');
-        handleRegistrationSuccess(true);
-      })
-      .catch(() => handleRegistrationSuccess(false));
+    handleRegistration(registrData);
   }
 
   return (
